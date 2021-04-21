@@ -16,9 +16,7 @@ public class Calculadora {
      * Constructor de la clase Calculadora
      */
     public Calculadora() {
-        this.singleMatrix = null;
-        this.matrizA = null;
-        this.matrizB = null;
+
     }
 
     /**
@@ -26,6 +24,11 @@ public class Calculadora {
      */
     public void menu() {
         int op;
+
+        this.singleMatrix = null;
+        this.matrizA = null;
+        this.matrizB = null;
+
         boolean salir = false, status;
         Scanner sc = new Scanner(System.in);
 
@@ -35,11 +38,11 @@ public class Calculadora {
             op = sc.nextInt();
 
             switch (op) {
-                case 0:
+                case 0: // Salir
                     salir = true;
                     break;
 
-                case 1:
+                case 1: // Suma
                     do {
                         if (crearDosMatrices()) {
                             if (mismoOrden(this.matrizA, this.matrizB)) {
@@ -50,13 +53,16 @@ public class Calculadora {
                     } while (!status);
                     break;
 
-                case 2:
+                case 2: // Escalar
                     if (crearMatriz()) {
-                        escalar(this.singleMatrix);
+                        System.out.println("Introduzca el numero por el cual dese realizar la multiplicacion:");
+                        int num = sc.nextInt();
+
+                        escalar(this.singleMatrix, num);
                     }
                     break;
 
-                case 3:
+                case 3: // Producto
                     do {
                         if (crearDosMatrices()) {
                             if (sePuedenMultiplicar(this.matrizA.length, this.matrizB[0].length)) {
@@ -67,19 +73,33 @@ public class Calculadora {
                     } while (!status);
                     break;
 
-                case 4:
+                case 4: // Traspuesta
+                    do {
+                        if (crearMatriz()) {
+                            status = true;
+                            transponer(this.singleMatrix);
+                        }
+                    } while (!status);
                     break;
 
-                case 5:
+                case 5: // Diagonal principial
+                    do {
+                        if (crearMatriz()) {
+                            if (esCuadrada(this.singleMatrix)) {
+                                status = true;
+                                diagonalPrincipal(this.singleMatrix);
+                            }
+                        }
+                    } while (!status);
                     break;
 
-                case 6:
+                case 6: // Simetrica
                     break;
 
-                case 7:
+                case 7: // Potencia
                     break;
 
-                case 8:
+                case 8: // Resta
                     break;
 
                 default:
@@ -94,7 +114,7 @@ public class Calculadora {
     /**
      * Imprime las opciones del menu por pantalla
      */
-    public void imprimirMenu() {
+    private void imprimirMenu() {
         System.out.println("1. Suma de dos matrices");
         System.out.println("2. Producto de un escalar por una matriz");
         System.out.println("3. Producto de dos matrices.");
@@ -121,7 +141,7 @@ public class Calculadora {
         int filas2 = matrizB.length;
         int col2 = matrizB[0].length;
 
-        if (filas1 != filas2 && col1 != col2) {
+        if (filas1 != filas2 || col1 != col2) {
             System.out.println("Las matrices no tienen el mismo orden." +
                     "La matriz B debe tener el mismo numero de filas y columnas" +
                     "que la matriz A.\n" +
@@ -166,6 +186,23 @@ public class Calculadora {
     }
 
     /**
+     * Comprueba si una matriz es cuadrada
+     *
+     * @param matriz
+     * @return <code>true</code> si la matriz lo es y <code>false</code> si no
+     */
+    private boolean esCuadrada(int[][] matriz) {
+        boolean esCuadrada = matriz.length == matriz[0].length;
+
+        if (!esCuadrada) {
+            System.out.println("La matriz ha de tener el mismo numero de filas y columnas.\n" +
+                    "Introduzca de nuevo el tamaño.\n");
+        }
+
+        return esCuadrada;
+    }
+
+    /**
      * Inicializa una matriz con el tamanio y valores introducidos por el usuario
      *
      * @return <code>true</code> si se ha creado correctamente y <code>false</code> si no se ha podido
@@ -199,9 +236,9 @@ public class Calculadora {
                     this.singleMatrix[i][j] = sc.nextInt();
                 }
             }
-        }
 
-        status = true;
+            status = true;
+        }
 
         return status;
     }
@@ -257,9 +294,9 @@ public class Calculadora {
                     this.matrizB[i][j] = sc.nextInt();
                 }
             }
-        }
 
-        status = true;
+            status = true;
+        }
 
         return status;
     }
@@ -267,8 +304,8 @@ public class Calculadora {
     /**
      * Suma dos matrices de igual tamanio
      *
-     * @param matriz1
-     * @param matriz2
+     * @param matriz1 La matriz A que vamos a sumar
+     * @param matriz2 La matriz B que vamos a sumar
      * @return La matriz resultante de la suma
      */
     public int[][] suma(int[][] matriz1, int[][] matriz2) {
@@ -276,7 +313,7 @@ public class Calculadora {
 
         for (int i = 0; i < suma.length; i++) {
             for (int j = 0; j < suma[0].length; j++) {
-                suma[i][j] = this.matrizA[i][j] + this.matrizB[i][j];
+                suma[i][j] = matriz1[i][j] + matriz2[i][j];
             }
         }
 
@@ -293,15 +330,10 @@ public class Calculadora {
      * @param matriz la matriz por la cual vamos a realizar el producto
      * @return La matriz resultante del producto por el escalar
      */
-    public int[][] escalar(int[][] matriz) {
-        int num;
+    public int[][] escalar(int[][] matriz, int num) {
         int[][] resultado;
-        Scanner sc = new Scanner(System.in);
 
         resultado = new int[matriz.length][matriz[0].length];
-
-        System.out.println("Introduzca el numero por el cual dese realizar la multiplicacion:");
-        num = sc.nextInt();
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
@@ -342,5 +374,51 @@ public class Calculadora {
         }
 
         return resultado;
+    }
+
+    /**
+     * Obtiene la matriz traspuesta de una matriz
+     *
+     * @param matriz la matriz de la cual la queremos obtener
+     * @return la matriz traspuesta
+     */
+    public int[][] transponer(int[][] matriz) {
+        int[][] resultado = new int[matriz[0].length][matriz.length];
+
+        for (int i = 0; i < resultado.length; i++) {
+            for (int j = 0; j < resultado[0].length; j++) {
+                resultado[i][j] = matriz[j][i];
+            }
+        }
+
+        System.out.println("La matriz resultante es:");
+        for (int[] i : resultado) {
+            System.out.println(Arrays.toString(i));
+        }
+
+        return resultado;
+    }
+
+    /**
+     * Halla la diagonal principal de una matriz cuadrada
+     *
+     * @param matriz La matriz de la que se desea obtener la diagonal
+     * @return La diagonal de la matriz
+     */
+    public int[] diagonalPrincipal(int[][] matriz) {
+        int[] diagonal = new int[matriz.length];
+
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                if (i == j) {
+                    diagonal[i] = matriz[i][j];
+                }
+            }
+        }
+
+        System.out.println("La diagonal principal es: ");
+        System.out.println(Arrays.toString(diagonal));
+
+        return diagonal;
     }
 }
