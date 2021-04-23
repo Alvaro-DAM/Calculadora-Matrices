@@ -47,7 +47,7 @@ public class Calculadora {
                         if (crearDosMatrices()) {
                             if (mismoOrden(this.matrizA, this.matrizB)) {
                                 status = true;
-                                suma(this.matrizA, this.matrizB);
+                                imprimirResultado(suma(this.matrizA, this.matrizB));
                             }
                         }
                     } while (!status);
@@ -57,8 +57,7 @@ public class Calculadora {
                     if (crearMatriz()) {
                         System.out.println("Introduzca el numero por el cual dese realizar la multiplicacion:");
                         int num = sc.nextInt();
-
-                        escalar(this.singleMatrix, num);
+                        imprimirResultado(escalar(this.singleMatrix, num));
                     }
                     break;
 
@@ -67,7 +66,7 @@ public class Calculadora {
                         if (crearDosMatrices()) {
                             if (sePuedenMultiplicar(this.matrizA.length, this.matrizB[0].length)) {
                                 status = true;
-                                producto(this.matrizA, this.matrizB);
+                                imprimirResultado(producto(this.matrizA, this.matrizB));
                             }
                         }
                     } while (!status);
@@ -77,7 +76,7 @@ public class Calculadora {
                     do {
                         if (crearMatriz()) {
                             status = true;
-                            transponer(this.singleMatrix);
+                            imprimirResultado(transponer(this.singleMatrix));
                         }
                     } while (!status);
                     break;
@@ -94,12 +93,29 @@ public class Calculadora {
                     break;
 
                 case 6: // Simetrica
+                    do {
+                        if (crearMatriz()) {
+                            if (esCuadrada(this.singleMatrix)) {
+                                status = true;
+                                esSimetrica(this.singleMatrix);
+                            }
+                        }
+
+                    } while (!status);
                     break;
 
                 case 7: // Potencia
                     break;
 
                 case 8: // Resta
+                    do {
+                        if (crearDosMatrices()) {
+                            if (mismoOrden(this.matrizA, this.matrizB)) {
+                                status = true;
+                                imprimirResultado(resta(this.matrizA, this.matrizB));
+                            }
+                        }
+                    } while (!status);
                     break;
 
                 default:
@@ -124,6 +140,21 @@ public class Calculadora {
         System.out.println("7. Potencia de una matriz cuadrada");
         System.out.println("8. Resta de dos matrices");
         System.out.println("0. Salir");
+    }
+
+    /**
+     * Imprime la matriz pasado como parametro
+     *
+     * @param matriz La matriz que deseamos imprimir
+     */
+    private void imprimirResultado(int[][] matriz) {
+        System.out.println("La matriz resultante es:");
+
+        for (int[] fila : matriz) {
+            System.out.println(Arrays.toString(fila));
+        }
+
+        System.out.println();
     }
 
     /**
@@ -317,10 +348,6 @@ public class Calculadora {
             }
         }
 
-        for (int[] fil : suma) {
-            System.out.println(Arrays.toString(fil));
-        }
-
         return suma;
     }
 
@@ -341,11 +368,6 @@ public class Calculadora {
             }
         }
 
-        System.out.println("La matriz resultante es:");
-        for (int[] fil : resultado) {
-            System.out.println(Arrays.toString(fil));
-        }
-
         return resultado;
     }
 
@@ -359,18 +381,16 @@ public class Calculadora {
      */
     public int[][] producto(int[][] matriz1, int[][] matriz2) {
         int[][] resultado = new int[matriz1.length][matriz2[0].length];
+        int suma = 0;
 
         for (int i = 0; i < matriz1.length; i++) {
             for (int j = 0; j < matriz2[0].length; j++) {
                 for (int k = 0; k < matriz2.length; k++) {
-                    resultado[i][j] += matriz1[i][k] * matriz2[k][j];
+                    suma += matriz1[i][k] * matriz2[k][j];
                 }
+                resultado[i][j] = suma;
+                suma = 0;
             }
-        }
-
-        System.out.println("La matriz resultante es:");
-        for (int[] i : resultado) {
-            System.out.println(Arrays.toString(i));
         }
 
         return resultado;
@@ -389,11 +409,6 @@ public class Calculadora {
             for (int j = 0; j < resultado[0].length; j++) {
                 resultado[i][j] = matriz[j][i];
             }
-        }
-
-        System.out.println("La matriz resultante es:");
-        for (int[] i : resultado) {
-            System.out.println(Arrays.toString(i));
         }
 
         return resultado;
@@ -420,5 +435,54 @@ public class Calculadora {
         System.out.println(Arrays.toString(diagonal));
 
         return diagonal;
+    }
+
+    /**
+     * Comprueba si una matriz es simetrica
+     *
+     * @param matriz La matriz de la cual lo deseamos comprobar
+     * @return <code>true</code> si es simetrica y <code>false</code> si no
+     */
+    public boolean esSimetrica(int[][] matriz) {
+        boolean esSimetrica = true;
+        int[][] traspuesta = transponer(matriz);
+
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[0].length; j++) {
+                if (matriz[i][j] != traspuesta[i][j]) {
+                    esSimetrica = false;
+                }
+            }
+        }
+
+        if (!esSimetrica) {
+            System.out.println("No es simetrica.\n");
+        } else {
+            System.out.println("Es simetrica.\n");
+        }
+
+        return esSimetrica;
+    }
+
+    /**
+     * Calcula la potencia de una matriz
+     *
+     * @param matriz    La matriz de la cual queremos calcular su potencia
+     * @param exponente El numero al cual vamos a elevar la potencia
+     * @return La matriz resultado de la potencia
+     */
+    public int[][] potencia(int[][] matriz, int exponente) {
+        int[][] resultado = new int[matriz.length][matriz[0].length];
+
+        return resultado;
+    }
+
+    public int[][] resta(int[][] matriz1, int[][] matriz2) {
+        int[][] resultado = new int[matriz1.length][matriz1[0].length];
+        int[][] matrizResta = escalar(matriz2, -1);
+
+        resultado = suma(matriz1, matrizResta);
+
+        return resultado;
     }
 }
