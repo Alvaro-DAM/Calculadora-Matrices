@@ -1,4 +1,4 @@
-package es.dam1.prg;
+package cdn1.alvaroPisabarros.prg;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -192,9 +192,7 @@ public class Calculadora {
      * @return <code>true</code> si tiene un tamaño correcto y <code>false</code> si no
      */
     private boolean tamanioCorrecto(int filas, int col) {
-        boolean correcto = (filas > 0 && col > 0);
-
-        return correcto;
+        return (filas > 0 && col > 0);
     }
 
     /**
@@ -219,7 +217,7 @@ public class Calculadora {
     /**
      * Comprueba si una matriz es cuadrada
      *
-     * @param matriz
+     * @param matriz La matriz la cual queremos comprobar si es cuadrada
      * @return <code>true</code> si la matriz lo es y <code>false</code> si no
      */
     private boolean esCuadrada(int[][] matriz) {
@@ -451,6 +449,7 @@ public class Calculadora {
             for (int j = 0; j < matriz[0].length; j++) {
                 if (matriz[i][j] != traspuesta[i][j]) {
                     esSimetrica = false;
+                    break;
                 }
             }
         }
@@ -478,7 +477,7 @@ public class Calculadora {
     }
 
     public int[][] resta(int[][] matriz1, int[][] matriz2) {
-        int[][] resultado = new int[matriz1.length][matriz1[0].length];
+        int[][] resultado;
         int[][] matrizResta = escalar(matriz2, -1);
 
         resultado = suma(matriz1, matrizResta);
